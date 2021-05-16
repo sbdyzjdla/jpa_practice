@@ -1,21 +1,26 @@
 package domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 
 @Entity
 @Table(name = "MEMBER")
 public class Member {
     @Id
-    @Column(name = "ID")
+    @Column(name = "MEMBER_ID")
     private String id;
 
-    @Column(name = "NAME")
     private String username;
 
-    private Integer age;
+    //연관관계 매핑
+    @ManyToOne
+    @JoinColumn(name = "TEAM_ID")
+    private Team team;
+
+    public Member(String id, String username) {
+        this.id = id;
+        this.username = username;
+    }
 
     public String getId() {
         return id;
@@ -33,11 +38,11 @@ public class Member {
         this.username = username;
     }
 
-    public Integer getAge() {
-        return age;
+    public Team getTeam() {
+        return team;
     }
 
-    public void setAge(Integer age) {
-        this.age = age;
+    public void setTeam(Team team) {
+        this.team = team;
     }
 }
