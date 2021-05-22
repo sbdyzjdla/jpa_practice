@@ -1,48 +1,72 @@
 package domain;
 
+import org.hibernate.criterion.Order;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
-@Table(name = "MEMBER")
 public class Member {
-    @Id
+    @Id @GeneratedValue
     @Column(name = "MEMBER_ID")
-    private String id;
+    private Long id;
 
-    private String username;
+    private String name;
 
-    //연관관계 매핑
-    @ManyToOne
-    @JoinColumn(name = "TEAM_ID")
-    private Team team;
+    private String city;
+    private String street;
+    private String zipcode;
 
-    public Member(String id, String username) {
-        this.id = id;
-        this.username = username;
-    }
+    @OneToMany(mappedBy = "member")
+    private List<Order> orders = new ArrayList<Order>();
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Team getTeam() {
-        return team;
+    public String getCity() {
+        return city;
     }
 
-    public void setTeam(Team team) {
-        this.team = team;
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getZipcode() {
+        return zipcode;
+    }
+
+    public void setZipcode(String zipcode) {
+        this.zipcode = zipcode;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
     }
 }

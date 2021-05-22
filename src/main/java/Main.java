@@ -1,5 +1,6 @@
 import domain.Member;
 import domain.Team;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -17,7 +18,9 @@ public class Main {
             tx.begin();
             //logic(em);
             testSave(em);
+            //queryLogicJoin(em);
             tx.commit();
+
         } catch (Exception e) {
             tx.rollback();
         } finally {
@@ -71,6 +74,59 @@ public class Main {
         member2.setTeam(team1);
         em.persist(member2);
 
+        biDreiction(em);
     }
 
+    //JPQL
+    public static void queryLogicJoin(EntityManager em) {
+
+        String jpql = "select m from Member m join m.team t where t.name=:teamName";
+
+        List<Member> resultList = em.createQuery(jpql, Member.class)
+                .setParameter("teamName", "팀1")
+                .getResultList();
+
+        for(Member member : resultList) {
+            System.out.println("[query] member.username = " + member.getUsername());
+        }
+    }
+
+    //수정
+    private static void updateRelation(EntityManager em) {
+
+        //새로운 팀2
+        Team team2 = new Team("team2", "팀2");
+        em.persist(team2);
+
+        //회원1에 새로운 팀2 설정
+        Member member = em.find(Member.class, "member1");
+        member.setTeam(team2);
+    }
+
+    //연관관계 삭제
+    private static void deleteRelation(EntityManager em) {
+
+        Member member1 = em.find(Member.class, "member1");
+        member1.setTeam(null);
+    }
+
+    //연관된 엔티티 삭제
+    // 연관된 엔티티를 삭제하려면 외래키 제약조건에 의하여 오류 발생
+    // 연관관계 먼저 제거후 삭제
+    // member1.setTeam(null);
+    // em.remove(team);
+
+    //team 조회 양방향
+    public static void biDreiction(EntityManager em) {
+        Team team = em.find(Team.class, "team1");
+        List<Member> members = team.getMembers();
+        System.out.println("!!!!!!!!!!!"+ team.getName());
+
+        Member member1 = em.find(Member.class, "member1");
+        System.out.println("@@@@@@@"+ member1.getUsername());
+
+        for(Member member : members) {
+            System.out.println("member.username =" + member.getUsername());
+        }
+    }
 }
